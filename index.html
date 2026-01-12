@@ -200,6 +200,8 @@
     <button id="spinBtn">GIRA!</button>
     <div id="result"></div>
 
+    <button id="notifyBtn" style="background-color: #ff9800; display: none;">🔔 Attiva Notifiche</button>
+
     <!-- OneSignal Bell replaces the custom checkbox -->
 
     <button id="installBtn">📲 Installa App</button>
@@ -215,9 +217,39 @@
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
         window.OneSignalDeferred = window.OneSignalDeferred || [];
+        
+        // Setup Notify Button Logic
+        const notifyBtn = document.getElementById('notifyBtn');
+
         OneSignalDeferred.push(async function(OneSignal) {
             await OneSignal.init({
                 appId: "3cc59c8b-c638-4137-893f-1bef78fc6e0c",
+            });
+            
+            // Check if already subscribed
+            const isPushSupported = OneSignal.Notifications.isPushSupported();
+            if (isPushSupported) {
+                const permission = OneSignal.Notifications.permission;
+                if (!permission) {
+                    // Permission not yet granted, show button
+                    notifyBtn.style.display = 'inline-block';
+                }
+            }
+
+            // Handle button click
+            notifyBtn.addEventListener('click', async () => {
+                console.log("Requesting permission...");
+                try {
+                    await OneSignal.Notifications.requestPermission();
+                    // If granted, hide button
+                    if (OneSignal.Notifications.permission) {
+                        notifyBtn.style.display = 'none';
+                        alert("Notifiche attivate con successo!");
+                    }
+                } catch (e) {
+                    console.error("Permission request failed", e);
+                    alert("Impossibile attivare le notifiche. Controlla le impostazioni del browser.");
+                }
             });
         });
         
