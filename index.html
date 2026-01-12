@@ -243,11 +243,42 @@
             notifyBtn.addEventListener('click', async () => {
                 console.log("Requesting permission...");
                 try {
+                    // Step 1: Request Permission
                     await OneSignal.Notifications.requestPermission();
-                    alert(`Stato finale: ${OneSignal.Notifications.permission}`);
+                    
+                    // Step 2: Check result
+                    const perm = OneSignal.Notifications.permission;
+                    
+                    if (perm === 'granted') {
+                        // Step 3: Wait for subscription ID (Push Token)
+                        // Sometimes permission is granted but subscription fails (e.g. no internet/blocked)
+                        alert("Permesso OK. Attendo registrazione...");
+                        
+                        // Try to get user ID
+                        const userId = OneSignal.User.PushSubscription.id;
+                        if (userId) {
+                            alert(`SUCCESSO! ID Utente: ${userId}`);
+                        } else {
+                            // Subscribe explicitly
+                            OneSignal.User.PushSubscription.optIn();
+                            
+                            // Wait a bit and check again
+                            setTimeout(() => {
+                                const newId = OneSignal.User.PushSubscription.id;
+                                if (newId) {
+                                    alert(`SUCCESSO DOPO ATTESA! ID: ${newId}`);
+                                } else {
+                                    alert("ATTENZIONE: Permesso dato, ma ID Utente nullo. Probabile errore di rete o Service Worker non caricato.");
+                                }
+                            }, 3000);
+                        }
+                    } else {
+                        alert(`Permesso negato o chiuso: ${perm}`);
+                    }
+
                 } catch (e) {
                     console.error("Permission request failed", e);
-                    alert("Errore richiesta: " + e.message);
+                    alert("ERRORE GRAVE: " + JSON.stringify(e));
                 }
             });
         });
