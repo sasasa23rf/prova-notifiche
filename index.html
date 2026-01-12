@@ -201,7 +201,7 @@
     <button id="spinBtn">GIRA!</button>
     <div id="result"></div>
 
-    <button id="notifyBtn" style="background-color: #ff9800; display: none;">🔔 Attiva Notifiche</button>
+    <button id="notifyBtn" style="background-color: #ff9800; display: block; margin: 10px auto;">🔔 Attiva Notifiche (Debug)</button>
 
     <!-- OneSignal Bell replaces the custom checkbox -->
 
@@ -229,27 +229,25 @@
             
             // Check if already subscribed
             const isPushSupported = OneSignal.Notifications.isPushSupported();
-            if (isPushSupported) {
-                const permission = OneSignal.Notifications.permission;
-                if (!permission) {
-                    // Permission not yet granted, show button
-                    notifyBtn.style.display = 'inline-block';
-                }
-            }
+            const permission = OneSignal.Notifications.permission;
+            
+            console.log("Push Supported:", isPushSupported);
+            console.log("Current Permission:", permission);
+            
+            // alert(`DEBUG: Supporto Push: ${isPushSupported} | Permesso: ${permission}`);
+
+            // Always show button for debugging
+            // notifyBtn.style.display = 'inline-block';
 
             // Handle button click
             notifyBtn.addEventListener('click', async () => {
                 console.log("Requesting permission...");
                 try {
                     await OneSignal.Notifications.requestPermission();
-                    // If granted, hide button
-                    if (OneSignal.Notifications.permission) {
-                        notifyBtn.style.display = 'none';
-                        alert("Notifiche attivate con successo!");
-                    }
+                    alert(`Stato finale: ${OneSignal.Notifications.permission}`);
                 } catch (e) {
                     console.error("Permission request failed", e);
-                    alert("Impossibile attivare le notifiche. Controlla le impostazioni del browser.");
+                    alert("Errore richiesta: " + e.message);
                 }
             });
         });
