@@ -215,13 +215,9 @@
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
         window.OneSignalDeferred = window.OneSignalDeferred || [];
-        OneSignalDeferred.push(function(OneSignal) {
-            OneSignal.init({
+        OneSignalDeferred.push(async function(OneSignal) {
+            await OneSignal.init({
                 appId: "3cc59c8b-c638-4137-893f-1bef78fc6e0c",
-                notifyButton: {
-                    enable: true, /* Mostra campanella in basso a destra */
-                },
-                allowLocalhostAsSecureOrigin: true,
             });
         });
         
