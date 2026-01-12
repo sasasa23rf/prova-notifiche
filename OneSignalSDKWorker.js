@@ -1,4 +1,8 @@
-importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDKWorker.js');
+try {
+  importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDKWorker.js');
+} catch (e) {
+  console.warn("OneSignal SDK failed to load (likely blocked by AdBlock or Network):", e);
+}
 
 // --- Caching Logic (Offline Support) ---
 const CACHE_NAME = 'ruota-v2';
