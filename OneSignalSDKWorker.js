@@ -2,7 +2,7 @@
 // This imports the official worker but handles failures gracefully.
 
 try {
-    importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDKWorker.js');
+    importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
 } catch (e) {
     console.warn("Primary import failed. Attempting fallback logic or ignoring.", e);
 }
