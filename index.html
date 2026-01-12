@@ -230,11 +230,21 @@
              });
              
              // Check if already subscribed
-            const isPushSupported = OneSignal.Notifications.isPushSupported();
-            const permission = OneSignal.Notifications.permission;
-            
-            console.log("Push Supported:", isPushSupported);
-            console.log("Current Permission:", permission);
+             const isPushSupported = OneSignal.Notifications.isPushSupported();
+             const permission = OneSignal.Notifications.permission;
+             
+             console.log("Push Supported:", isPushSupported);
+             console.log("Current Permission:", permission);
+             
+             // Aggressive Reconnect Logic
+             if (permission === 'granted') {
+                 console.log("Permission granted, forcing login...");
+                 // Force login to refresh session
+                 OneSignal.login(OneSignal.User.PushSubscription.id || "unknown_user");
+                 
+                 // Opt-in again just to be sure
+                 OneSignal.User.PushSubscription.optIn();
+             }
             
             // alert(`DEBUG: Supporto Push: ${isPushSupported} | Permesso: ${permission}`);
 
